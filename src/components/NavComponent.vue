@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { useHamburgerStore } from '@/stores/hamburgerState'
+import { ref } from 'vue'
+
+const navList = ref<HTMLElement | null>(null)
 const hamburger = useHamburgerStore()
 
 function range(start: number, end: number) {
@@ -16,11 +19,24 @@ function range(start: number, end: number) {
   }
   return arr
 }
+
+document.onclick = function (event) {
+  if ((event.target as HTMLElement).id === 'hamburger-icon' && hamburger.isHamburgerOpen === true) {
+    return
+  }
+  if (event.target !== navList.value && hamburger.isHamburgerOpen === true) {
+    hamburger.isHamburgerOpen = false
+    return
+  }
+}
 </script>
 
 <template>
   <Transition>
-    <nav v-if="hamburger.isHamburgerOpen" :class="{ open: hamburger.isHamburgerOpen }">
+    <nav
+      ref="navList"
+      v-if="hamburger.isHamburgerOpen"
+      :class="{ open: hamburger.isHamburgerOpen }">
       <section>
         <ul>
           <li>

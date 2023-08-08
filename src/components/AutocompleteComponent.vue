@@ -23,7 +23,6 @@ const isFocused = ref(false)
 
 onMounted(() => {
   if (inputText.value != '') isFocused.value = true
-  console.log(inputText.value)
 })
 
 function animateLabel(focusState: string = '') {

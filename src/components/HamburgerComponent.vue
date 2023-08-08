@@ -5,6 +5,7 @@ const hamburger = useHamburgerStore()
 
 <template>
   <div
+    id="hamburger-icon"
     class="hamburger"
     :class="{ open: hamburger.isHamburgerOpen }"
     @click="hamburger.negateHamburger">
@@ -33,6 +34,10 @@ const hamburger = useHamburgerStore()
 }
 
 .hamburger span {
+  /* https://stackoverflow.com/questions/19997374/trigger-parent-click-event-when-child-is-clicked */
+  /* Important do not remove*/
+  pointer-events: none;
+
   display: block;
   position: absolute;
   height: 5px;
