@@ -14,6 +14,8 @@
   --text-light-2: rgba(60, 60, 60, 0.66);
   --text-dark-1: var(--white);
   --text-dark-2: rgba(235, 235, 235, 0.64);
+
+  --header-height: 4rem;
 }
 
 /* semantic color variables for this project */

@@ -8,3 +8,8 @@
   text-overflow: clip;
 }
 
+main {
+  padding: 1em;
+  position: relative;
+  top: var(--header-height);
+}

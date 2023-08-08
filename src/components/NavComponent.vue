@@ -33,9 +33,7 @@ function range(start: number, end: number) {
         <h3 class="overflow-clip">Train Services</h3>
         <ul>
           <li>
-            <RouterLink class="link overflow-clip" to="/trainsBtwStations"
-              >Trains Between stations</RouterLink
-            >
+            <RouterLink class="link overflow-clip" to="/">Trains Between stations</RouterLink>
           </li>
           <li>
             <RouterLink class="link overflow-clip" to="/schedule">Train Schedule</RouterLink>
@@ -73,6 +71,7 @@ nav {
   padding: 1em;
   overflow-y: scroll;
   scroll-behavior: smooth;
+  border-radius: 0.5rem;
   /* overflow: auto; */
   --transistion-time: 0.4s;
 }
