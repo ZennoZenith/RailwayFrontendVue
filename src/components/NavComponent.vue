@@ -118,7 +118,7 @@ nav::-webkit-scrollbar-thumb:hover {
 }
 
 nav {
-  font-family: 'Kreon', serif;
+  /* font-family: 'Kreon', serif; */
   font-family: 'Roboto Mono', monospace;
   color: rgb(136, 147, 180);
 }

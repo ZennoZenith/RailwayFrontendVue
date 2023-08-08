@@ -31,7 +31,8 @@ header {
   padding: 10px;
   /* background-color: blueviolet; */
   height: var(--header-height);
-  border-bottom: 1px rgba(40, 40, 40, 0.5) solid;
+  /* border-bottom: 1px rgba(40, 40, 40, 0.5) solid; */
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
 }
 
 .logo {
