@@ -31,7 +31,11 @@ document.onclick = function (event) {
 }
 
 const trainInfoServices = [
-  { text: 'Trains btw stations', route: '/', imgSrc: '/src/assets/location-dot-solid.svg' },
+  {
+    text: 'Trains btw stations',
+    route: '/trainsBtwStations',
+    imgSrc: '/src/assets/location-dot-solid.svg',
+  },
   { text: 'Train schedule', route: '/', imgSrc: '/src/assets/train-schedule.svg' },
   { text: 'Train Info', route: '/', imgSrc: '/src/assets/train-info.svg' },
   { text: 'Station Info', route: '/', imgSrc: '/src/assets/station.svg' },

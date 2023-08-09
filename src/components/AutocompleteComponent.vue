@@ -43,6 +43,11 @@ function clearInputText() {
   isFocused.value = false
   if (inputElement.value) inputElement.value.value = ''
 }
+
+function onValueChange() {
+  animateLabel()
+  return props.text1
+}
 </script>
 
 <template>
@@ -58,7 +63,7 @@ function clearInputText() {
       :name="name"
       :placeholder="placeholder"
       :class="inputClass"
-      :value="text1"
+      :value="onValueChange()"
       @input="$emit('update:text1', ($event.target as InputHTMLAttributes).value)"
       class="default-input"
       @focusin="animateLabel('Focused')"

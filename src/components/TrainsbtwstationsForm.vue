@@ -1,26 +1,39 @@
 <script setup lang="ts">
 import Autocomplete from '@/components/AutocompleteComponent.vue'
 import DatepickerComponent from '@/components/DatepickerComponent.vue'
+/*
+import router from '@/router'
+
+and 
+
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+will give same outcome
+*/
+
+import { useRoute, useRouter } from 'vue-router'
+const router = useRouter()
 import { ref } from 'vue'
+import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsState'
 
-const fromStationName = ref('')
-const toStationName = ref('')
-const fromStationCode = ref('')
-const toStationCode = ref('')
-const date = ref('')
+// let { fromStationName, toStationName, fromStationCode, toStationCode, date } =
+//   useTrainsBtwStationsStore()
 
+let trainsBetweenStationStore = useTrainsBtwStationsStore()
 function swap() {
-  console.log('Hello')
-
-  let temp = fromStationName.value
-  fromStationName.value = toStationName.value
-  toStationName.value = temp
-  temp = fromStationCode.value
-  fromStationCode.value = toStationCode.value
-  toStationCode.value = temp
+  let temp = trainsBetweenStationStore.fromStationName
+  trainsBetweenStationStore.fromStationName = trainsBetweenStationStore.toStationName
+  trainsBetweenStationStore.toStationName = temp
+  temp = trainsBetweenStationStore.fromStationCode
+  trainsBetweenStationStore.fromStationCode = trainsBetweenStationStore.toStationCode
+  trainsBetweenStationStore.toStationCode = temp
 }
 
-function searchTrain() {}
+function searchTrain() {
+  trainsBetweenStationStore.redirected = true
+  router.push('/trainsBtwStations')
+}
 </script>
 <template>
   <Autocomplete
@@ -28,8 +41,8 @@ function searchTrain() {}
     class="station-input-container"
     name="fromStation"
     label="From station"
-    v-model:text1="fromStationName"
-    v-model:text2="fromStationCode">
+    v-model:text1="trainsBetweenStationStore.fromStationName"
+    v-model:text2="trainsBetweenStationStore.fromStationCode">
     <img alt="" class="logo" src="@/assets/waiting.png" />
   </Autocomplete>
   <div class="line">
@@ -42,12 +55,12 @@ function searchTrain() {}
     class="station-input-container"
     name="toStation"
     label="To station"
-    v-model:text1="toStationName"
-    v-model:text2="toStationCode">
+    v-model:text1="trainsBetweenStationStore.toStationName"
+    v-model:text2="trainsBetweenStationStore.toStationCode">
     <img alt="" class="logo" src="@/assets/arrived.png" />
   </Autocomplete>
   <div class="line"></div>
-  <DatepickerComponent class="date-input-container" v-model:date="date" />
+  <DatepickerComponent class="date-input-container" v-model:date="trainsBetweenStationStore.date" />
   <div class="line"></div>
 
   <button class="search-button" type="button" @click="searchTrain">Search Trains</button>
