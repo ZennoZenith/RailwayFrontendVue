@@ -8,6 +8,14 @@
   text-overflow: clip;
 }
 
+.overflow-ellipsis {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 main {
   padding: 1em;
   position: relative;

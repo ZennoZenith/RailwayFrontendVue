@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useHamburgerStore } from '@/stores/hamburgerState'
+
 const hamburger = useHamburgerStore()
 </script>
 

@@ -6,10 +6,10 @@ import NavComponent from './components/NavComponent.vue'
 
 <template>
   <header>
-    <div class="logo">
+    <div class="website-title">
       <RouterLink to="/" class="link">
-        <img alt="RailwayAPI logo" class="logo" src="@/assets/logo.svg" />
-        <h1>RailwayAPI</h1>
+        <img alt="RailwayDemo logo" class="logo" src="@/assets/logo.svg" />
+        <h1>Railway Demo</h1>
       </RouterLink>
     </div>
     <HamburgerComponent />
@@ -34,23 +34,22 @@ header {
   /* border-bottom: 1px rgba(40, 40, 40, 0.5) solid; */
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
 }
-
-.logo {
-  text-decoration: none;
-  flex-grow: 1;
-  height: calc(var(--header-height) - 10px);
+.website-title {
+  /* flex-grow: 1; */
+  margin-right: auto;
 }
 
 .link {
   text-decoration: none;
   color: inherit;
+  height: calc(var(--header-height) - 10px);
   display: flex;
-  width: 15rem;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
-.link h1 {
-  margin-left: -1em;
+.logo {
+  text-decoration: none;
+  flex-shrink: 1;
 }
 </style>

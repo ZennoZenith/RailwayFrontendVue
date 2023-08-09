@@ -29,6 +29,13 @@ document.onclick = function (event) {
     return
   }
 }
+
+const trainInfoServices = [
+  { text: 'Trains btw stations', route: '/', imgSrc: '/src/assets/location-dot-solid.svg' },
+  { text: 'Train schedule', route: '/', imgSrc: '/src/assets/train-schedule.svg' },
+  { text: 'Train Info', route: '/', imgSrc: '/src/assets/train-info.svg' },
+  { text: 'Station Info', route: '/', imgSrc: '/src/assets/station.svg' },
+]
 </script>
 
 <template>
@@ -40,7 +47,10 @@ document.onclick = function (event) {
       <section>
         <ul>
           <li>
-            <RouterLink class="link overflow-clip" to="/">Home</RouterLink>
+            <RouterLink class="link overflow-clip" to="/">
+              <img alt="" class="logo" src="@/assets/home.svg" />
+              Home
+            </RouterLink>
           </li>
         </ul>
       </section>
@@ -48,17 +58,11 @@ document.onclick = function (event) {
       <section>
         <h3 class="overflow-clip">Train Services</h3>
         <ul>
-          <li>
-            <RouterLink class="link overflow-clip" to="/">Trains Between stations</RouterLink>
-          </li>
-          <li>
-            <RouterLink class="link overflow-clip" to="/schedule">Train Schedule</RouterLink>
-          </li>
-          <li>
-            <RouterLink class="link overflow-clip" to="/train">Train Info </RouterLink>
-          </li>
-          <li>
-            <RouterLink class="link overflow-clip" to="/station">Station Info</RouterLink>
+          <li v-for="(item, index) in trainInfoServices" :key="index">
+            <RouterLink class="link overflow-clip" :to="item.route">
+              <img alt="" class="logo" :src="item.imgSrc" />
+              {{ item.text }}</RouterLink
+            >
           </li>
         </ul>
       </section>
@@ -148,6 +152,8 @@ h3 {
 .link {
   display: block;
   padding: 10px 0;
+  display: flex;
+  align-items: center;
   text-decoration: none;
   color: inherit;
   font-size: smaller;
@@ -158,5 +164,9 @@ h3 {
 
 ul {
   list-style: none;
+}
+.logo {
+  height: 1.5em;
+  padding-right: 10px;
 }
 </style>

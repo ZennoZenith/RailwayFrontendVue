@@ -90,9 +90,9 @@ function setDate(dateOption: string) {
   cursor: pointer;
   font-size: 0.7rem;
   color: rgba(0, 0, 0, 0.5);
-  padding: 0 5px;
+  padding: 5px 5px;
   width: 20%;
-  height: 70%;
+  /* height: 60%; */
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 5px;
 }

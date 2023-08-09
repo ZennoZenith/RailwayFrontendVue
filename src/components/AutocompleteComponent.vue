@@ -15,10 +15,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  initialInputText: { type: String, default: '' },
+  text1: { type: String, default: '' },
+  text2: { type: String, default: '' },
 })
 
-const inputText = ref(props.initialInputText)
+const inputText = ref(props.text1)
 const isFocused = ref(false)
 
 onMounted(() => {
@@ -80,6 +81,7 @@ function clearInputText() {
   margin: 0;
   --transistion-time: 0.3s;
   transition: var(--transistion-time) ease;
+  transform-origin: top left;
   /* font-size: 0.8rem; */
 }
 .default-input {
