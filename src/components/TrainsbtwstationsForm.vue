@@ -15,7 +15,7 @@ will give same outcome
 import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 import { ref } from 'vue'
-import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsState'
+import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
 
 // let { fromStationName, toStationName, fromStationCode, toStationCode, date } =
 //   useTrainsBtwStationsStore()
@@ -76,9 +76,7 @@ function searchTrain() {
   height: 3em;
   font-size: 1.2rem;
 }
-.station-input-container:nth-child(1) {
-  margin-bottom: 1em;
-}
+
 .station-input-container:nth-child(3) {
   margin-top: 1em;
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import { useHamburgerStore } from '@/stores/hamburgerState'
+import { useHamburgerStore } from '@/stores/hamburgerStore'
 import { ref } from 'vue'
 
 const navList = ref<HTMLElement | null>(null)

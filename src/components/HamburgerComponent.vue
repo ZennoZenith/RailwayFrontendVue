@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useHamburgerStore } from '@/stores/hamburgerState'
+import { useHamburgerStore } from '@/stores/hamburgerStore'
 
 const hamburger = useHamburgerStore()
 </script>
