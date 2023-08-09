@@ -10,6 +10,8 @@ const toStationCode = ref('')
 const date = ref('')
 
 function swap() {
+  console.log('Hello')
+
   let temp = fromStationName.value
   fromStationName.value = toStationName.value
   toStationName.value = temp
@@ -17,6 +19,8 @@ function swap() {
   fromStationCode.value = toStationCode.value
   toStationCode.value = temp
 }
+
+function searchTrain() {}
 </script>
 <template>
   <Autocomplete
@@ -24,8 +28,8 @@ function swap() {
     class="station-input-container"
     name="fromStation"
     label="From station"
-    :text1="fromStationName"
-    :text2="fromStationCode">
+    v-model:text1="fromStationName"
+    v-model:text2="fromStationCode">
     <img alt="" class="logo" src="@/assets/waiting.png" />
   </Autocomplete>
   <div class="line">
@@ -38,15 +42,15 @@ function swap() {
     class="station-input-container"
     name="toStation"
     label="To station"
-    :text1="toStationName"
-    :text2="toStationCode">
+    v-model:text1="toStationName"
+    v-model:text2="toStationCode">
     <img alt="" class="logo" src="@/assets/arrived.png" />
   </Autocomplete>
   <div class="line"></div>
-  <DatepickerComponent class="date-input-container" :date="date" />
+  <DatepickerComponent class="date-input-container" v-model:date="date" />
   <div class="line"></div>
 
-  <button class="search-button" type="button">Search Trains</button>
+  <button class="search-button" type="button" @click="searchTrain">Search Trains</button>
 </template>
 
 <style scoped>
@@ -56,8 +60,14 @@ function swap() {
 }
 .station-input-container {
   width: 100%;
-  height: 4em;
+  height: 3em;
   font-size: 1.2rem;
+}
+.station-input-container:nth-child(1) {
+  margin-bottom: 1em;
+}
+.station-input-container:nth-child(3) {
+  margin-top: 1em;
 }
 
 .swap-container {

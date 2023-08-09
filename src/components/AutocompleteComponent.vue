@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { InputHTMLAttributes } from 'vue'
 import { onMounted, ref } from 'vue'
 
 const props = defineProps({
@@ -19,11 +20,13 @@ const props = defineProps({
   text2: { type: String, default: '' },
 })
 
-const inputText = ref(props.text1)
+const emits = defineEmits(['update:text1', 'update:text2'])
+
+const inputElement = ref<InputHTMLAttributes | null>(null)
 const isFocused = ref(false)
 
 onMounted(() => {
-  if (inputText.value != '') isFocused.value = true
+  if (props.text1 != '') isFocused.value = true
 })
 
 function animateLabel(focusState: string = '') {
@@ -31,13 +34,14 @@ function animateLabel(focusState: string = '') {
     isFocused.value = true
     return
   }
-  if (inputText.value != '') isFocused.value = true
+  if (props.text1 != '') isFocused.value = true
   else isFocused.value = false
 }
 
 function clearInputText() {
-  inputText.value = ''
+  emits('update:text1', '')
   isFocused.value = false
+  if (inputElement.value) inputElement.value.value = ''
 }
 </script>
 
@@ -48,13 +52,14 @@ function clearInputText() {
     </label>
     <slot></slot>
     <input
-      ref="input"
+      ref="inputElement"
       type="text"
       :id="id"
       :name="name"
       :placeholder="placeholder"
       :class="inputClass"
-      v-model.trim="inputText"
+      :value="text1"
+      @input="$emit('update:text1', ($event.target as InputHTMLAttributes).value)"
       class="default-input"
       @focusin="animateLabel('Focused')"
       @focusout="animateLabel()" />
