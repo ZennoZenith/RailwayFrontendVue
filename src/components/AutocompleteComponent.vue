@@ -27,10 +27,12 @@ const isFocused = ref(false)
 
 onMounted(() => {
   if (props.text1 != '') isFocused.value = true
+  clearInputText
+  animateLabel()
 })
 
-function animateLabel(focusState: string = '') {
-  if (focusState === 'Focused') {
+function animateLabel() {
+  if (inputElement.value === document.activeElement) {
     isFocused.value = true
     return
   }
@@ -66,7 +68,7 @@ function onValueChange() {
       :value="onValueChange()"
       @input="$emit('update:text1', ($event.target as InputHTMLAttributes).value)"
       class="default-input"
-      @focusin="animateLabel('Focused')"
+      @focusin="animateLabel()"
       @focusout="animateLabel()" />
     <span class="cross" @click="clearInputText">&#x2A09;</span>
     <!-- ⨉ -->

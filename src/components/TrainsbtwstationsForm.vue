@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Autocomplete from '@/components/AutocompleteComponent.vue'
 import DatepickerComponent from '@/components/DatepickerComponent.vue'
+import { debounce } from '@/util'
 /*
 import router from '@/router'
 
@@ -16,9 +17,6 @@ import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 import { ref } from 'vue'
 import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
-
-// let { fromStationName, toStationName, fromStationCode, toStationCode, date } =
-//   useTrainsBtwStationsStore()
 
 let trainsBetweenStationStore = useTrainsBtwStationsStore()
 function swap() {
