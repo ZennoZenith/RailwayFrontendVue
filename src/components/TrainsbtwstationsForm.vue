@@ -26,11 +26,16 @@ const fromTrainInputText = ref('')
 const toTrainInputText = ref('')
 
 onMounted(() => {
-  if (
-    trainsBetweenStationStore.fromStationName !== '' &&
-    trainsBetweenStationStore.fromStationCode !== ''
-  )
-    fromTrainInputText.value = `${trainsBetweenStationStore.fromStationName} -  ${trainsBetweenStationStore.fromStationCode}`
+  // if (
+  //   trainsBetweenStationStore.fromStationName !== undefined &&
+  //   trainsBetweenStationStore.fromStationCode !== undefined
+  // )
+  //   fromTrainInputText.value = `${trainsBetweenStationStore.fromStationName} -  ${trainsBetweenStationStore.fromStationCode}`
+  // if (
+  //   trainsBetweenStationStore.toStationName !== undefined &&
+  //   trainsBetweenStationStore.toStationCode !== undefined
+  // )
+  //   toTrainInputText.value = `${trainsBetweenStationStore.toStationName} -  ${trainsBetweenStationStore.toStationCode}`
 })
 
 async function getStationList(q: string) {
@@ -48,6 +53,13 @@ async function updateStationList(q: string) {
 }
 
 function onAutocompleteItemClick(data: StationGeneralInfo, context: 'FromStation' | 'ToStation') {
+  if (!data) {
+    trainsBetweenStationStore.fromStationCode = ''
+    trainsBetweenStationStore.fromStationName = ''
+    trainsBetweenStationStore.toStationCode = ''
+    trainsBetweenStationStore.toStationName = ''
+    return
+  }
   if (context === 'FromStation') {
     trainsBetweenStationStore.fromStationCode = data.stationCode
     trainsBetweenStationStore.fromStationName = data.stationName
@@ -76,6 +88,13 @@ function searchTrain() {
   trainsBetweenStationStore.redirected = true
   router.push(routes.trainsBtwStations)
 }
+
+function swap() {
+  trainsBetweenStationStore.swap()
+  const temp = fromTrainInputText.value
+  fromTrainInputText.value = toTrainInputText.value
+  toTrainInputText.value = temp
+}
 </script>
 <template>
   <Autocomplete
@@ -90,7 +109,7 @@ function searchTrain() {
     <img alt="" class="logo" src="@/assets/waiting.png" />
   </Autocomplete>
   <div class="line">
-    <span class="swap-container" @click="trainsBetweenStationStore.swap">
+    <span class="swap-container" @click="swap">
       <img alt="swap" class="swap" src="@/assets/swap.svg" />
     </span>
   </div>

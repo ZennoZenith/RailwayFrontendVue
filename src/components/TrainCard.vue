@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 
-import { routes } from '@/router'
+import Routes, { routes } from '@/router'
 import { type TrainsBtwStationsType } from 'api-railway'
 import IconRightAngle from '@/components/icons/IconRightAngle.vue'
 import IconDuration from '@/components/icons/IconDuration.vue'
-import type { TrainRunsOnType } from 'api-railway'
 import { ref } from 'vue'
+
+import { useScheduleStore } from '@/stores/scheduleStore'
+const scheduleStore = useScheduleStore()
 
 const props = defineProps<{ train: TrainsBtwStationsType }>()
 const train = ref(props.train)
@@ -17,7 +19,6 @@ const {
   availableClasses,
   hasPantry,
   trainType,
-  returnTrainNumber,
   stationFrom,
   stationTo,
   distance,
@@ -41,6 +42,13 @@ function trainTypeColor(trainType: string): string {
   if (trainType === 'EXP') return 'blue'
   return 'black'
 }
+
+function onClickTrainSchedule() {
+  scheduleStore.trainNumber = trainNumber
+  scheduleStore.trainName = trainName
+  scheduleStore.redirected = true
+  Routes.push(routes.schedule)
+}
 </script>
 <template>
   <div class="train-card">
@@ -48,7 +56,7 @@ function trainTypeColor(trainType: string): string {
     <section class="tr-number-name-runs">
       <span class="train-number">{{ trainNumber }}</span> &nbsp; | &nbsp;
       <span class="train-name">{{ trainName }}</span> &nbsp;
-      <RouterLink :to="routes.train" class="link"> <IconRightAngle class="svg" /> </RouterLink>
+      <span @click="onClickTrainSchedule" class="link"> <IconRightAngle class="svg" /> </span>
       <section class="train-runs-on">
         <span
           v-for="trainRunsOnDay in trainRunsOnDays"
@@ -127,6 +135,7 @@ svg {
   align-items: center;
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
   /* font-size: smaller; */
 }
 .link:hover {

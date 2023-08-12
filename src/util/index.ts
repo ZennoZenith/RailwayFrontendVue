@@ -45,3 +45,16 @@ export function range(start: number, end?: number) {
   }
   return arr
 }
+
+export function HHMMtoMinutes(HHMM: string | undefined | null): number | undefined {
+  if (!HHMM) return undefined
+  const HHMMSplit: string[] = HHMM.split(':')
+  if (HHMMSplit.length < 2) return undefined
+  const HH: number = Number(HHMMSplit[0])
+  const MM: number = Number(HHMMSplit[1])
+
+  if (isNaN(HH) || isNaN(MM)) return undefined
+  if (!Number.isInteger(HH) || !Number.isInteger(MM)) return undefined
+
+  return HH * 60 + MM
+}

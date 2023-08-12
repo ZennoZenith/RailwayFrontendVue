@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { InputHTMLAttributes } from 'vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { watch } from 'vue'
+import { onMounted, ref } from 'vue'
 
 interface Props {
   placeholder?: string
@@ -42,15 +43,19 @@ function animateLabel() {
 
 function clearInputText() {
   emits('onAutocompleteItemClick', undefined)
+  emits('update:text', '')
   shouldLabelBeFocusedState.value = false
   if (inputElement.value) inputElement.value.value = ''
 }
 
 function onAutocompleteItemClick(item: any) {
-  if (inputElement.value) inputElement.value.value = item.text
+  emits('update:text', item.text)
   emits('onAutocompleteItemClick', item)
 }
 
+watch(props, () => {
+  animateLabel()
+})
 function onKeyDown() {
   showAutoSuggest.value = true
 }
@@ -99,11 +104,10 @@ function onKeyDown() {
 }
 .default-label {
   position: absolute;
-  /* left: 15px;
-  top: -10px; */
+  border-radius: 100%;
   translate: 2em 0px;
   scale: 1;
-  /* background-color: white; */
+  background-color: white;
   color: rgb(241, 90, 34);
   padding: 0 10px;
   margin: 0;
