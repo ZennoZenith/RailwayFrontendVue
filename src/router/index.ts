@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import NotFoundView from '@/views/404View.vue'
+import ScheduleView from '@/views/ScheduleView.vue'
 import TrainsBetweenStationsView from '@/views/TrainsBtwStationsView.vue'
 
 export const routes = {
   home: '/',
   trainsBtwStations: '/trainsBtwStations',
   train: '/train',
+  schedule: '/schedule',
+  station: '/station',
 } as const
 
 export type Route = (typeof routes)[keyof typeof routes]
@@ -15,15 +18,20 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: routes.home,
       name: 'home',
       component: HomeView,
       alias: ['/home'],
     },
     {
-      path: '/trainsBtwStations',
+      path: routes.trainsBtwStations,
       name: 'Trains Between Stations',
       component: TrainsBetweenStationsView,
+    },
+    {
+      path: routes.schedule,
+      name: 'Train schedule',
+      component: ScheduleView,
     },
 
     // {

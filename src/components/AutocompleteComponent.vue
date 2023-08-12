@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { StationGeneralInfo } from 'api-railway'
 import type { InputHTMLAttributes } from 'vue'
 import { computed, onMounted, ref, watch } from 'vue'
 
@@ -8,27 +7,24 @@ interface Props {
   name: string
   label: string
   id: string
-  text1: string
-  text2: string
-  stationList?: StationGeneralInfo[]
+  text?: string
+  autocompleteList?: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
   placeholder: '',
-  text1: '',
-  text2: '',
-  stationList: () => [],
+  text: '',
+  autocompleteList: () => [],
 })
 
-const emits = defineEmits(['update:text1', 'update:text2', 'onKeyUp'])
+const emits = defineEmits(['onAutocompleteItemClick', 'update:text', 'onKeyUp'])
 
 const inputElement = ref<InputHTMLAttributes | null>(null)
 const shouldLabelBeFocusedState = ref(false)
 const showAutoSuggest = ref(false)
 
 onMounted(() => {
-  if (props.text1 != '') shouldLabelBeFocusedState.value = true
-  clearInputText
+  if (props.text != '') shouldLabelBeFocusedState.value = true
   animateLabel()
 })
 
@@ -40,25 +36,23 @@ function animateLabel() {
   }
   showAutoSuggest.value = false
 
-  if (props.text1 != '') shouldLabelBeFocusedState.value = true
+  if (props.text != '') shouldLabelBeFocusedState.value = true
   else shouldLabelBeFocusedState.value = false
 }
 
 function clearInputText() {
-  emits('update:text1', '')
-  emits('update:text2', '')
+  emits('onAutocompleteItemClick', undefined)
   shouldLabelBeFocusedState.value = false
   if (inputElement.value) inputElement.value.value = ''
 }
 
-function onValueChange() {
-  animateLabel()
-  return props.text1
+function onAutocompleteItemClick(item: any) {
+  if (inputElement.value) inputElement.value.value = item.text
+  emits('onAutocompleteItemClick', item)
 }
 
-function onAutocompleteItemClick(item: StationGeneralInfo) {
-  emits('update:text1', `${item.stationName} - ${item.stationCode}`)
-  emits('update:text2', item.stationCode)
+function onKeyDown() {
+  showAutoSuggest.value = true
 }
 </script>
 
@@ -73,9 +67,10 @@ function onAutocompleteItemClick(item: StationGeneralInfo) {
       type="text"
       :id="id"
       :name="name"
+      :value="text"
       :placeholder="placeholder"
-      :value="onValueChange()"
-      @input="$emit('update:text1', ($event.target as InputHTMLAttributes).value)"
+      @keydown="onKeyDown"
+      @input="$emit('update:text', ($event.target as InputHTMLAttributes).value)"
       class="default-input"
       @focusin="animateLabel()"
       @focusout="animateLabel()"
@@ -84,10 +79,11 @@ function onAutocompleteItemClick(item: StationGeneralInfo) {
     <Transition>
       <div v-show="showAutoSuggest" class="autocomplete-items">
         <div
-          v-for="item in stationList"
-          :key="item.stationCode"
+          v-for="(item, index) in autocompleteList"
+          :key="index"
           @click="onAutocompleteItemClick(item)">
-          {{ `${item.stationName} - ${item.stationCode}` }}
+          <span v-if="item.text !== undefined"> {{ item.text }}</span>
+          <span v-else>{{ item }}</span>
         </div>
       </div>
     </Transition>

@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router'
 /*
 import router from '@/router'
 
-and 
+and
 
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -17,17 +17,49 @@ will give same outcome
 
 import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
 import client from '@/util/ApiClient'
+import type { StationGeneralInfo } from 'api-railway'
+import { routes } from '@/router'
 
 const router = useRouter()
-
-let trainsBetweenStationStore = useTrainsBtwStationsStore()
+const trainsBetweenStationStore = useTrainsBtwStationsStore()
+const fromTrainInputText = ref('')
+const toTrainInputText = ref('')
 
 onMounted(() => {
-  trainsBetweenStationStore.resetAll()
+  if (
+    trainsBetweenStationStore.fromStationName !== '' &&
+    trainsBetweenStationStore.fromStationCode !== ''
+  )
+    fromTrainInputText.value = `${trainsBetweenStationStore.fromStationName} -  ${trainsBetweenStationStore.fromStationCode}`
 })
+
+async function getStationList(q: string) {
+  const LIMIT = 20
+  return await client.stations.getStationsGeneral(q, LIMIT)
+}
+
+async function updateStationList(q: string) {
+  if (q === '') return
+  const stations = await getStationList(q)
+  if (!stations.ok) return
+  trainsBetweenStationStore.stationList = stations.data.flatMap(value => {
+    return { ...value, text: `${value.stationName} - ${value.stationCode}` }
+  })
+}
+
+function onAutocompleteItemClick(data: StationGeneralInfo, context: 'FromStation' | 'ToStation') {
+  if (context === 'FromStation') {
+    trainsBetweenStationStore.fromStationCode = data.stationCode
+    trainsBetweenStationStore.fromStationName = data.stationName
+  } else if (context === 'ToStation') {
+    trainsBetweenStationStore.toStationCode = data.stationCode
+    trainsBetweenStationStore.toStationName = data.stationName
+  }
+}
 
 function searchTrain() {
   // TODO: show error if fromStation is same as toStation
+  // TODO: `${trainsBetweenStationStore.fromStationName} - ${trainsBetweenStationStore.fromStationCode}` === fromTrainInputText.value
   if (
     trainsBetweenStationStore.fromStationName === '' ||
     trainsBetweenStationStore.fromStationCode === '' ||
@@ -42,19 +74,7 @@ function searchTrain() {
     return
   }
   trainsBetweenStationStore.redirected = true
-  router.push('/trainsBtwStations')
-}
-
-async function getStationList(q: string) {
-  const LIMIT = 20
-  return await client.stations.getStationsGeneral(q, LIMIT)
-}
-
-async function updateStationList(q: string) {
-  if (q === '') return
-  const stations = await getStationList(q)
-  if (!stations.ok) return
-  trainsBetweenStationStore.stationList = stations.data
+  router.push(routes.trainsBtwStations)
 }
 </script>
 <template>
@@ -63,10 +83,10 @@ async function updateStationList(q: string) {
     class="station-input-container"
     name="fromStation"
     label="From station"
-    v-model:text1="trainsBetweenStationStore.fromStationName"
-    v-model:text2="trainsBetweenStationStore.fromStationCode"
-    @onKeyUp="updateStationList(trainsBetweenStationStore.fromStationName)"
-    :stationList="trainsBetweenStationStore.stationList">
+    v-model:text="fromTrainInputText"
+    @onKeyUp="updateStationList"
+    :autocompleteList="trainsBetweenStationStore.stationList"
+    @onAutocompleteItemClick="data => onAutocompleteItemClick(data, 'FromStation')">
     <img alt="" class="logo" src="@/assets/waiting.png" />
   </Autocomplete>
   <div class="line">
@@ -79,10 +99,10 @@ async function updateStationList(q: string) {
     class="station-input-container"
     name="toStation"
     label="To station"
-    v-model:text1="trainsBetweenStationStore.toStationName"
-    v-model:text2="trainsBetweenStationStore.toStationCode"
-    @onKeyUp="updateStationList(trainsBetweenStationStore.toStationName)"
-    :stationList="trainsBetweenStationStore.stationList">
+    v-model:text="toTrainInputText"
+    @onKeyUp="updateStationList"
+    :autocompleteList="trainsBetweenStationStore.stationList"
+    @onAutocompleteItemClick="data => onAutocompleteItemClick(data, 'ToStation')">
     <img alt="" class="logo" src="@/assets/arrived.png" />
   </Autocomplete>
   <div class="line"></div>

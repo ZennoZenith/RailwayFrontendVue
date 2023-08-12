@@ -29,7 +29,6 @@ onMounted(async () => {
     trainsBetweenStationStore.fromStationCode,
     trainsBetweenStationStore.toStationCode,
   )
-  console.log(trainsBtwStations.value.ok)
 })
 </script>
 <template>

@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import { useHamburgerStore } from '@/stores/hamburgerStore'
 // import { range } from '@/util'
 import { ref } from 'vue'
-
+import { routes } from '@/router'
 const navList = ref<HTMLElement | null>(null)
 const hamburger = useHamburgerStore()
 
@@ -20,12 +20,12 @@ document.onclick = function (event) {
 const trainInfoServices = [
   {
     text: 'Trains btw stations',
-    route: '/trainsBtwStations',
+    route: routes.trainsBtwStations,
     imgSrc: '/src/assets/location-dot-solid.svg',
   },
-  { text: 'Train schedule', route: '/', imgSrc: '/src/assets/train-schedule.svg' },
-  { text: 'Train Info', route: '/', imgSrc: '/src/assets/train-info.svg' },
-  { text: 'Station Info', route: '/', imgSrc: '/src/assets/station.svg' },
+  { text: 'Train schedule', route: routes.schedule, imgSrc: '/src/assets/train-schedule.svg' },
+  { text: 'Train Info', route: routes.train, imgSrc: '/src/assets/train-info.svg' },
+  { text: 'Station Info', route: routes.station, imgSrc: '/src/assets/station.svg' },
 ]
 </script>
 
@@ -38,7 +38,7 @@ const trainInfoServices = [
       <section>
         <ul>
           <li>
-            <RouterLink class="link overflow-clip" to="/">
+            <RouterLink class="link overflow-clip" :to="routes.home">
               <img alt="" class="logo" src="@/assets/home.svg" />
               Home
             </RouterLink>
@@ -72,10 +72,10 @@ nav {
   position: absolute;
   right: 1em;
   top: calc(var(--header-height) - 10px);
-  width: 60vw;
+  width: 15rem;
 
   /* TODO: Change height according to list size */
-  height: 40vh;
+  height: 19rem;
   /* max-height: 90vh; */
   transform-origin: top right;
   transform: scale(1);
