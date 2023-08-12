@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import Autocomplete from '@/components/AutocompleteComponent.vue'
 import DatepickerComponent from '@/components/DatepickerComponent.vue'
-import { debounce } from '@/util'
+import { onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+
 /*
 import router from '@/router'
 
@@ -13,24 +15,46 @@ const router = useRouter()
 will give same outcome
 */
 
-import { useRoute, useRouter } from 'vue-router'
-const router = useRouter()
-import { ref } from 'vue'
 import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
+import client from '@/util/ApiClient'
+
+const router = useRouter()
 
 let trainsBetweenStationStore = useTrainsBtwStationsStore()
-function swap() {
-  let temp = trainsBetweenStationStore.fromStationName
-  trainsBetweenStationStore.fromStationName = trainsBetweenStationStore.toStationName
-  trainsBetweenStationStore.toStationName = temp
-  temp = trainsBetweenStationStore.fromStationCode
-  trainsBetweenStationStore.fromStationCode = trainsBetweenStationStore.toStationCode
-  trainsBetweenStationStore.toStationCode = temp
-}
+
+onMounted(() => {
+  trainsBetweenStationStore.resetAll()
+})
 
 function searchTrain() {
+  // TODO: show error if fromStation is same as toStation
+  if (
+    trainsBetweenStationStore.fromStationName === '' ||
+    trainsBetweenStationStore.fromStationCode === '' ||
+    trainsBetweenStationStore.toStationName === '' ||
+    trainsBetweenStationStore.toStationCode === ''
+  ) {
+    alert('Invalid input')
+    return
+  }
+  if (trainsBetweenStationStore.fromStationName === trainsBetweenStationStore.toStationName) {
+    alert('From station cannot be same as to station')
+    return
+  }
   trainsBetweenStationStore.redirected = true
   router.push('/trainsBtwStations')
+}
+
+async function getStationList(q: string) {
+  const LIMIT = 20
+  return await client.stations.getStationsGeneral(q, LIMIT)
+}
+
+async function updateStationList(q: string) {
+  if (q === '') return
+  const stations = await getStationList(q)
+  if (!stations.ok) return
+  trainsBetweenStationStore.stationList = stations.data
 }
 </script>
 <template>
@@ -40,11 +64,13 @@ function searchTrain() {
     name="fromStation"
     label="From station"
     v-model:text1="trainsBetweenStationStore.fromStationName"
-    v-model:text2="trainsBetweenStationStore.fromStationCode">
+    v-model:text2="trainsBetweenStationStore.fromStationCode"
+    @onKeyUp="updateStationList(trainsBetweenStationStore.fromStationName)"
+    :stationList="trainsBetweenStationStore.stationList">
     <img alt="" class="logo" src="@/assets/waiting.png" />
   </Autocomplete>
   <div class="line">
-    <span class="swap-container" @click="swap">
+    <span class="swap-container" @click="trainsBetweenStationStore.swap">
       <img alt="swap" class="swap" src="@/assets/swap.svg" />
     </span>
   </div>
@@ -54,7 +80,9 @@ function searchTrain() {
     name="toStation"
     label="To station"
     v-model:text1="trainsBetweenStationStore.toStationName"
-    v-model:text2="trainsBetweenStationStore.toStationCode">
+    v-model:text2="trainsBetweenStationStore.toStationCode"
+    @onKeyUp="updateStationList(trainsBetweenStationStore.toStationName)"
+    :stationList="trainsBetweenStationStore.stationList">
     <img alt="" class="logo" src="@/assets/arrived.png" />
   </Autocomplete>
   <div class="line"></div>

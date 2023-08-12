@@ -1,0 +1,29 @@
+<template>
+  <svg
+    viewBox="0 0 17 29"
+    xmlns="http://www.w3.org/2000/svg"
+    fit=""
+    focusable="false"
+    class="svg"
+    height="1em"
+    width="1em">
+    <line
+      x1="2"
+      y1="26.1716"
+      x2="13.6716"
+      y2="14.5"
+      fill="none"
+      stroke="#F15A22"
+      stroke-width="4"
+      stroke-linecap="round"></line>
+    <line
+      x1="13.6716"
+      y1="14.5"
+      x2="2"
+      y2="2.82843"
+      fill="none"
+      stroke="#F15A22"
+      stroke-width="4"
+      stroke-linecap="round"></line>
+  </svg>
+</template>

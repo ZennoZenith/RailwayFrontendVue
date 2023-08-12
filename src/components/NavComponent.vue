@@ -1,24 +1,11 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { useHamburgerStore } from '@/stores/hamburgerStore'
+// import { range } from '@/util'
 import { ref } from 'vue'
 
 const navList = ref<HTMLElement | null>(null)
 const hamburger = useHamburgerStore()
-
-function range(start: number, end: number) {
-  if (!end) {
-    end = start
-    start = 0
-  }
-  start -= 1
-  end -= 1
-  let arr = []
-  while (start++ !== end) {
-    arr.push(start)
-  }
-  return arr
-}
 
 document.onclick = function (event) {
   if ((event.target as HTMLElement).id === 'hamburger-icon' && hamburger.isHamburgerOpen === true) {

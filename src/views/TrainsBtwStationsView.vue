@@ -1,37 +1,39 @@
 <script setup lang="ts">
-// import { beforeRoute } from 'vue-router'
+import TrainCard from '@/components/TrainCard.vue'
 import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
 let trainsBetweenStationStore = useTrainsBtwStationsStore()
 import { routes } from '@/router'
-import Client, { type ApiRetrunType, type TrainsBtwStationsType } from 'api-railway'
+
+import {
+  type ApiRetrunType,
+  type TrainsBtwStationsType,
+  type TrainsBtwStationsExtraType,
+  type ErrorObj,
+} from 'api-railway'
+import client from '@/util/ApiClient'
+
 import router from '@/router'
 import { onMounted, ref } from 'vue'
 
-import client from '@/util/ApiClient'
-
-let trainsBtwStations = ref<ApiRetrunType<TrainsBtwStationsType>>()
+let trainsBtwStations =
+  ref<ApiRetrunType<TrainsBtwStationsType, ErrorObj, TrainsBtwStationsExtraType>>()
 
 onMounted(async () => {
   if (trainsBetweenStationStore.redirected !== true) {
     router.push(routes.home)
     return
   }
+
   trainsBetweenStationStore.redirected = false
-
   trainsBtwStations.value = await client.trainsBtwStations.getTrainsBtweenStations(
-    trainsBetweenStationStore.fromStationName,
-    trainsBetweenStationStore.toStationName,
+    trainsBetweenStationStore.fromStationCode,
+    trainsBetweenStationStore.toStationCode,
   )
-
-  const test = await client.trainsBtwStations.getTrainsBtweenStations(
-    trainsBetweenStationStore.fromStationName,
-    trainsBetweenStationStore.toStationName,
-  )
+  console.log(trainsBtwStations.value.ok)
 })
 </script>
 <template>
   <main>
-    <!-- Trains between stations -->
-    {{ trainsBtwStations?.data[0]. }}
+    <TrainCard v-for="train in trainsBtwStations?.data" :key="train.trainNumber" :train="train" />
   </main>
 </template>

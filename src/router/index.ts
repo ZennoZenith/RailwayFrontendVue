@@ -5,7 +5,8 @@ import TrainsBetweenStationsView from '@/views/TrainsBtwStationsView.vue'
 
 export const routes = {
   home: '/',
-  trainsBtwStations: '/',
+  trainsBtwStations: '/trainsBtwStations',
+  train: '/train',
 } as const
 
 export type Route = (typeof routes)[keyof typeof routes]

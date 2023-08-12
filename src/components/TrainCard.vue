@@ -1,160 +1,203 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
+
+import { routes } from '@/router'
+import { type TrainsBtwStationsType } from 'api-railway'
+import IconRightAngle from '@/components/icons/IconRightAngle.vue'
+import IconDuration from '@/components/icons/IconDuration.vue'
+import type { TrainRunsOnType } from 'api-railway'
 import { ref } from 'vue'
 
-// // eslint-disable-next-line vue/no-setup-props-destructure
-// const { train } = defineProps(['train'])
-
-const props = defineProps(['train', 'station'])
+const props = defineProps<{ train: TrainsBtwStationsType }>()
 const train = ref(props.train)
 
 const {
   trainNumber,
   trainName,
-  trainFullName,
-  trainRunsOn,
   availableClasses,
   hasPantry,
-  // trainType,
-  // returnTrainNumber,
+  trainType,
+  returnTrainNumber,
   stationFrom,
   stationTo,
   distance,
   duration,
+  trainRunsOn,
 } = train.value
 
 // const stationList = ref(props.station)
+
+const trainRunsOnDays = [
+  ['sunday', 'S', 'Sun'],
+  ['monday', 'M', 'Mon'],
+  ['tueday', 'T', 'Tue'],
+  ['wednesday', 'W', 'Wed'],
+  ['thursday', 'T', 'Thu'],
+  ['friday', 'F', 'Fri'],
+  ['saturday', 'S', 'Sat'],
+] as const
+
+function trainTypeColor(trainType: string): string {
+  if (trainType === 'EXP') return 'blue'
+  return 'black'
+}
 </script>
 <template>
   <div class="train-card">
-    <div class="train-type"></div>
-    <div class="train-number-name justify-self-start">
-      <div>
-        <span class="train-number font-bold">{{ trainNumber }}</span> -
-        <span class="train-name font-bold">{{ trainName }}</span>
+    <div class="train-type" :style="{ backgroundColor: trainTypeColor(trainType) }"></div>
+    <section class="tr-number-name-runs">
+      <span class="train-number">{{ trainNumber }}</span> &nbsp; | &nbsp;
+      <span class="train-name">{{ trainName }}</span> &nbsp;
+      <RouterLink :to="routes.train" class="link"> <IconRightAngle class="svg" /> </RouterLink>
+      <section class="train-runs-on">
+        <span
+          v-for="trainRunsOnDay in trainRunsOnDays"
+          :key="trainRunsOnDay[2]"
+          class="day"
+          :class="{ 'yes-run': trainRunsOn[trainRunsOnDay[0]] }">
+          {{ trainRunsOnDay[1] }}
+        </span>
+      </section>
+    </section>
+    <section class="departure-duration-arrival">
+      <div class="departure-time-station">
+        <div class="departure-time time">{{ stationFrom.departureTime!.slice(0, 5) }}</div>
+        <div class="departure-station station">{{ stationFrom.stationName }}</div>
       </div>
-      <div class="train-full-name text-overflow" :title="trainFullName">
-        {{ trainFullName }}
+      <div class="duration-distance">
+        <div class="duration">
+          <IconDuration class="duration-icon" style="transform: rotate(180deg)" />{{ duration }}
+          <IconDuration class="duration-icon" />
+        </div>
+        <div class="distance">{{ distance }} km</div>
       </div>
-    </div>
-    <div class="departure-info">
-      <span class="departure-time font-bold">{{ stationFrom.departureTime?.slice(0, 5) }}</span
-      >&nbsp;<span class="departure-station-code">{{ stationFrom.stationCode }}</span>
-      <div class="departure-station-full-name text-overflow">{{ stationFrom.stationName }}</div>
-      <div class="departure-day-date">Mon, 01 Jul</div>
-    </div>
-    <div class="duration">{{ duration }}</div>
-    <div class="distance">{{ distance }} km</div>
-    <div class="arrival-info">
-      <span class="arrival-time font-bold">{{ stationTo.arrivalTime?.slice(0, 5) }}</span
-      >&nbsp;<span class="arrival-station-code">{{ stationTo.stationCode }}</span>
-      <div class="arrival-station-full-name text-overflow">{{ stationTo.stationName }}</div>
-      <div class="arrival-day-date">Mon, 01 Jul</div>
-    </div>
-    <div class="train-runs-on justify-self-start">
-      Train runs on :
-      <div class="day" :class="trainRunsOn.trainRunsOnSun === 'Y' ? 'yes-run' : 'no-run'">Sun</div>
-      <div class="day" :class="trainRunsOn.trainRunsOnMon === 'Y' ? 'yes-run' : 'no-run'">Mon</div>
-      <div class="day" :class="trainRunsOn.trainRunsOnTue === 'Y' ? 'yes-run' : 'no-run'">Tue</div>
-      <div class="day" :class="trainRunsOn.trainRunsOnWed === 'Y' ? 'yes-run' : 'no-run'">Wed</div>
-      <div class="day" :class="trainRunsOn.trainRunsOnThu === 'Y' ? 'yes-run' : 'no-run'">Thu</div>
-      <div class="day" :class="trainRunsOn.trainRunsOnFri === 'Y' ? 'yes-run' : 'no-run'">Fri</div>
-      <div class="day" :class="trainRunsOn.trainRunsOnSat === 'Y' ? 'yes-run' : 'no-run'">Sat</div>
-    </div>
-    <div class="train-class-container justify-self-start">
-      <div class="train-class" v-for="classes in availableClasses" :key="classes">
-        {{ classes }}
+      <div class="arrival-time-station">
+        <div class="arrival-time time">
+          {{ stationTo.arrivalTime!.slice(0, 5) }}
+        </div>
+        <div class="arrival-station station">{{ stationTo.stationName }}</div>
       </div>
-    </div>
-    <div class="has-pantry justify-self-start">
-      Has pantry : <span>{{ hasPantry ? 'Yes' : 'No' }}</span>
-    </div>
-    <div class="show-schedule"><a>View timetable</a></div>
+    </section>
+    <section>
+      <span class="pantry"> Pantry : {{ hasPantry ? 'Yes' : 'No' }} </span>
+      <section class="classes">
+        <span class="class" v-for="_class in availableClasses.sort()" :key="_class">
+          {{ _class }}
+        </span>
+      </section>
+    </section>
   </div>
 </template>
 
 <style scoped>
-.justify-self-start {
-  justify-self: start;
-}
 .train-card {
   position: relative;
-  background-color: #fbd2d2;
-  display: grid;
-  gap: 5px;
-  padding: 10px 1em;
-  grid-template-columns: 2fr repeat(4, 1fr);
-  justify-items: center;
-  align-items: center;
-  border-radius: 1rem;
+  margin: 1em 0;
+  padding: 1em 0.5em;
+  border-radius: 1em;
+  border: solid 1px rgba(0, 0, 0, 0.5);
 }
 
 .train-type {
+  display: none;
   position: absolute;
-  width: 20px;
+  opacity: 0.2;
   height: 100%;
-  right: 18%;
-  background-color: rgba(23, 23, 23, 0.3);
+  width: 1.5em;
+  right: 0;
+  bottom: 0;
+  border-top-right-radius: 1em;
+  border-bottom-right-radius: 1em;
+}
+.tr-number-name-runs {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  white-space: nowrap;
+
+  /* justify-content: center; */
+}
+
+svg {
+  height: 1rem;
+}
+.link {
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  /* font-size: smaller; */
+}
+.link:hover {
+  color: rgb(98, 113, 157);
 }
 
 .train-runs-on {
+  margin-left: auto;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  grid-column: 1 / 6;
+  gap: 3px;
 }
-
 .day {
-  font-family: monospace;
-  font-size: 1rem;
-  padding: 4px 8px;
-  width: 45px;
-  border-radius: 1em;
-  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
 }
-
-.no-run {
-  background-color: rgba(255, 65, 36, 0.7);
-}
-
 .yes-run {
-  background-color: rgba(78, 255, 80, 0.7);
+  color: rgb(241, 90, 34);
 }
 
-.train-class-container {
-  grid-column: 1 / 6;
+.departure-duration-arrival {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* justify-content: space-between; */
+}
+
+.departure-time-station {
+  text-align: left;
+}
+
+.duration-distance {
+  text-align: center;
+  font-size: smaller;
+  opacity: 0.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.duration {
+  white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 5px;
 }
 
-.train-class {
-  background-color: #d9d9d9;
-  padding: 10px 15px;
-  text-align: center;
-  border-radius: 2em;
+.duration-icon {
+  height: 0.5rem;
 }
 
-.has-pantry {
-  grid-column-start: 1;
+.arrival-time-station {
+  text-align: right;
 }
 
-.show-schedule {
-  grid-column-start: 5;
-  justify-self: end;
+.time {
+  font-weight: bolder;
 }
-
-.font-bold {
-  font-weight: bold;
-}
-
-.text-overflow {
+.station {
+  font-size: smaller;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.train-number-name {
-  min-width: 0;
-  width: 100%;
+.classes {
+  position: absolute;
+  right: 0.5em;
+  display: inline-flex;
+  flex-flow: row wrap;
+  gap: 5px;
+}
+
+.class {
+  border: solid rgba(0, 0, 0, 0.5) 1px;
+  border-radius: 7px;
+  padding: 0 5px;
 }
 </style>
