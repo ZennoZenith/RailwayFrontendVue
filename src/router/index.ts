@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import NotFoundView from '@/views/404View.vue'
 import ScheduleView from '@/views/ScheduleView.vue'
+import TrainView from '@/views/TrainView.vue'
 import TrainsBetweenStationsView from '@/views/TrainsBtwStationsView.vue'
 
 export const routes = {
@@ -32,6 +33,11 @@ const router = createRouter({
       path: routes.schedule,
       name: 'Train schedule',
       component: ScheduleView,
+    },
+    {
+      path: routes.train,
+      name: 'Train info',
+      component: TrainView,
     },
 
     // {
