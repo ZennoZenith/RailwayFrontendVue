@@ -13,16 +13,6 @@ const trainNumberName = ref<{ trainNumber: string; trainName: string }>({
   trainNumber: '',
 })
 
-const trainRunsOnDays = [
-  ['sunday', 'S', 'Sun'],
-  ['monday', 'M', 'Mon'],
-  ['tueday', 'T', 'Tue'],
-  ['wednesday', 'W', 'Wed'],
-  ['thursday', 'T', 'Thu'],
-  ['friday', 'F', 'Fri'],
-  ['saturday', 'S', 'Sat'],
-] as const
-
 function beautifyTrainRunsOn(trainRunsOn?: TrainInfo['trainRunsOn']) {
   if (!trainRunsOn) return ''
   const tempArr = []
@@ -73,7 +63,7 @@ const trainObjToArr = computed(function () {
     ['Duration', beautifyDuration(trainInfo.value?.duration)],
     ['Distance', `${trainInfo.value?.distance} km`],
     ['Avg. Speed', `${trainInfo.value?.avgSpeed} km/h`],
-    ['Number of stops', trainInfo.value?.numberOfStops],
+    ['No. of stops', trainInfo.value?.numberOfStops],
   )
   return arr
 })

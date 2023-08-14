@@ -110,7 +110,7 @@ function onKeyDown() {
 }
 .default-label {
   position: absolute;
-  border-radius: 100%;
+  border-radius: 2000px;
   translate: 2em 0px;
   scale: 1;
   background-color: white;

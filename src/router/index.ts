@@ -4,6 +4,7 @@ import NotFoundView from '@/views/404View.vue'
 import ScheduleView from '@/views/ScheduleView.vue'
 import TrainView from '@/views/TrainView.vue'
 import TrainsBetweenStationsView from '@/views/TrainsBtwStationsView.vue'
+import StationView from '@/views/StationView.vue'
 
 export const routes = {
   home: '/',
@@ -38,6 +39,11 @@ const router = createRouter({
       path: routes.train,
       name: 'Train info',
       component: TrainView,
+    },
+    {
+      path: routes.station,
+      name: 'Station info',
+      component: StationView,
     },
 
     // {
