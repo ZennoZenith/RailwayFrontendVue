@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HamburgerComponent from '@/components/HamburgerComponent.vue'
 import NavComponent from './components/NavComponent.vue'
+import ToastNotificationContainer from './components/ToastNotificationContainer.vue'
 </script>
 
 <template>
@@ -16,6 +17,7 @@ import NavComponent from './components/NavComponent.vue'
     <NavComponent />
   </header>
   <RouterView />
+  <ToastNotificationContainer />
 </template>
 
 <style scoped>

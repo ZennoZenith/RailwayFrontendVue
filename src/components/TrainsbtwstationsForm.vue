@@ -3,40 +3,19 @@ import Autocomplete from '@/components/AutocompleteComponent.vue'
 import DatepickerComponent from '@/components/DatepickerComponent.vue'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-
-/*
-import router from '@/router'
-
-and
-
-import { useRouter } from 'vue-router'
-const router = useRouter()
-
-will give same outcome
-*/
-
 import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
 import client from '@/util/ApiClient'
 import type { StationGeneralInfo } from 'api-railway'
 import { routes } from '@/router'
+import { useToastStore } from '@/stores/toastStore'
 
+const toastStore = useToastStore()
 const router = useRouter()
 const trainsBetweenStationStore = useTrainsBtwStationsStore()
-const fromTrainInputText = ref('')
-const toTrainInputText = ref('')
+const fromStationInputText = ref('')
+const toStationInputText = ref('')
 
-onMounted(() => {
-  // if (
-  //   trainsBetweenStationStore.fromStationName !== undefined &&
-  //   trainsBetweenStationStore.fromStationCode !== undefined
-  // )
-  //   fromTrainInputText.value = `${trainsBetweenStationStore.fromStationName} -  ${trainsBetweenStationStore.fromStationCode}`
-  // if (
-  //   trainsBetweenStationStore.toStationName !== undefined &&
-  //   trainsBetweenStationStore.toStationCode !== undefined
-  // )
-  //   toTrainInputText.value = `${trainsBetweenStationStore.toStationName} -  ${trainsBetweenStationStore.toStationCode}`
-})
+onMounted(() => {})
 
 async function getStationList(q: string) {
   const LIMIT = 20
@@ -70,30 +49,66 @@ function onAutocompleteItemClick(data: StationGeneralInfo, context: 'FromStation
 }
 
 function searchTrain() {
-  // TODO: show error if fromStation is same as toStation
-  // TODO: `${trainsBetweenStationStore.fromStationName} - ${trainsBetweenStationStore.fromStationCode}` === fromTrainInputText.value
-  if (
-    trainsBetweenStationStore.fromStationName === '' ||
-    trainsBetweenStationStore.fromStationCode === '' ||
-    trainsBetweenStationStore.toStationName === '' ||
-    trainsBetweenStationStore.toStationCode === ''
-  ) {
-    alert('Invalid input')
-    return
-  }
-  if (trainsBetweenStationStore.fromStationName === trainsBetweenStationStore.toStationName) {
-    alert('From station cannot be same as to station')
-    return
-  }
+  if (!formValidation()) return
+
   trainsBetweenStationStore.redirected = true
   router.push(routes.trainsBtwStations)
 }
 
+function formValidation() {
+  let flag = false
+  if (fromStationInputText.value === '') {
+    toastStore.addToast({ text: 'From station empty', type: 'Error' })
+    flag = true
+  }
+
+  if (toStationInputText.value === '') {
+    toastStore.addToast({ text: 'To station empty', type: 'Error' })
+    flag = true
+  }
+
+  if (flag === true) {
+    return false
+  }
+
+  if (
+    trainsBetweenStationStore.fromStationName === '' ||
+    trainsBetweenStationStore.fromStationCode === '' ||
+    `${trainsBetweenStationStore.fromStationName} - ${trainsBetweenStationStore.fromStationCode}` !==
+      fromStationInputText.value
+  ) {
+    toastStore.addToast({ text: 'Invalid from station', type: 'Error' })
+    flag = true
+
+    return false
+  }
+
+  if (
+    trainsBetweenStationStore.toStationName === '' ||
+    trainsBetweenStationStore.toStationCode === '' ||
+    `${trainsBetweenStationStore.toStationName} - ${trainsBetweenStationStore.toStationCode}` !==
+      toStationInputText.value
+  ) {
+    toastStore.addToast({ text: 'Invalid to station', type: 'Error' })
+    flag = true
+  }
+
+  if (flag === true) {
+    return false
+  }
+
+  if (trainsBetweenStationStore.fromStationName === trainsBetweenStationStore.toStationName) {
+    toastStore.addToast({ text: 'From station cannot be same as to station', type: 'Error' })
+    return false
+  }
+  return true
+}
+
 function swap() {
   trainsBetweenStationStore.swap()
-  const temp = fromTrainInputText.value
-  fromTrainInputText.value = toTrainInputText.value
-  toTrainInputText.value = temp
+  const temp = fromStationInputText.value
+  fromStationInputText.value = toStationInputText.value
+  toStationInputText.value = temp
 }
 </script>
 <template>
@@ -102,7 +117,7 @@ function swap() {
     class="station-input-container"
     name="fromStation"
     label="From station"
-    v-model:text="fromTrainInputText"
+    v-model:text="fromStationInputText"
     @onKeyUp="updateStationList"
     :autocompleteList="trainsBetweenStationStore.stationList"
     @onAutocompleteItemClick="data => onAutocompleteItemClick(data, 'FromStation')">
@@ -118,7 +133,7 @@ function swap() {
     class="station-input-container"
     name="toStation"
     label="To station"
-    v-model:text="toTrainInputText"
+    v-model:text="toStationInputText"
     @onKeyUp="updateStationList"
     :autocompleteList="trainsBetweenStationStore.stationList"
     @onAutocompleteItemClick="data => onAutocompleteItemClick(data, 'ToStation')">

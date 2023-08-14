@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import Autocomplete from '@/components/AutocompleteComponent.vue'
 import { onMounted, ref } from 'vue'
-
 import client from '@/util/ApiClient'
 import { useTrainStore } from '@/stores/trainStore'
 import type { TrainGeneralInfo } from 'api-railway'
+import { useToastStore } from '@/stores/toastStore'
+const toastStore = useToastStore()
 
 const trainStore = useTrainStore()
 const trainNumberInputText = ref('')
@@ -14,6 +15,18 @@ onMounted(() => {
   if (trainStore.trainNumber !== undefined && trainStore.trainNumber !== '')
     trainNumberInputText.value = `${trainStore.trainNumber} - ${trainStore.trainName}`
 })
+
+function formValidation() {
+  if (trainNumberInputText.value === '') {
+    toastStore.addToast({ text: 'Train number is empty', type: 'Error' })
+    return false
+  }
+  if (trainStore.trainNumber === '') {
+    toastStore.addToast({ text: 'Invalid train number', type: 'Error' })
+    return false
+  }
+  return true
+}
 
 async function getTrainList(q: string) {
   const LIMIT = 10
@@ -33,7 +46,10 @@ async function updateTrainList(q: string) {
     }
   }
   const trains = await getTrainList(q)
-  if (!trains.ok) return
+  if (!trains.ok) {
+    toastStore.addToast({ text: 'No train found', type: 'Error' })
+    return
+  }
   trainStore.trainList = trains.data.flatMap(value => {
     return { ...value, text: `${value.trainNumber} - ${value.trainName}` }
   })
@@ -51,6 +67,7 @@ function onAutocompleteItemClick(data: TrainGeneralInfo) {
 }
 
 function searchSchedule() {
+  if (!formValidation()) return
   emits('onTrainSearch')
 }
 </script>

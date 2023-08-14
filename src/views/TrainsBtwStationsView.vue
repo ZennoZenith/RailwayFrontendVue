@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import TrainCard from '@/components/TrainCard.vue'
-import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
-let trainsBetweenStationStore = useTrainsBtwStationsStore()
 import { routes } from '@/router'
+import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
+import { useToastStore } from '@/stores/toastStore'
+const toastStore = useToastStore()
+let trainsBetweenStationStore = useTrainsBtwStationsStore()
 
 import {
   type ApiRetrunType,
@@ -29,6 +31,17 @@ onMounted(async () => {
     trainsBetweenStationStore.fromStationCode,
     trainsBetweenStationStore.toStationCode,
   )
+
+  if (trainsBtwStations.value.ok) return
+
+  if (trainsBtwStations.value.httpStatusCode === 404)
+    toastStore.addToast({ text: 'No trains found', type: 'Error', persistent: true })
+  else
+    toastStore.addToast({
+      text: JSON.stringify(trainsBtwStations.value.errors[0]),
+      type: 'Error',
+      persistent: true,
+    })
 })
 </script>
 <template>

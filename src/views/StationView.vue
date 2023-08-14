@@ -3,25 +3,13 @@ import Autocomplete from '@/components/AutocompleteComponent.vue'
 import client from '@/util/ApiClient'
 import { type StationGeneralInfo, type StationInfo } from 'api-railway'
 import { ref, computed } from 'vue'
+import { useToastStore } from '@/stores/toastStore'
+const toastStore = useToastStore()
 
 const stationInfo = ref<StationInfo>()
 const stationInputText = ref('')
 const stationList = ref<string[]>([])
 let stationCode = ''
-
-let test = {
-  id: 736,
-  stationCode: 'GWL',
-  stationName: 'Gwalior Junction',
-  stateName: 'Madhya Pradesh',
-  stationType: 'Junction',
-  numberOfPlatforms: 4,
-  hindiStationName: 'ग्वालियर जंक्शन',
-  zones: { zoneName: 'North Central Railway', zoneCode: 'NCR' },
-  latitude: '26.2159169056337',
-  longitude: '78.181956410408',
-  updatedAt: '2023-03-24T17:30:42.000Z',
-}
 
 const stationObjToArr = computed(function () {
   const arr = []
@@ -39,6 +27,18 @@ const stationObjToArr = computed(function () {
   return arr
 })
 
+function formValidation() {
+  if (stationInputText.value === '') {
+    toastStore.addToast({ text: 'Train number is empty', type: 'Error' })
+    return false
+  }
+  if (stationCode === '') {
+    toastStore.addToast({ text: 'Station code empty', type: 'Error' })
+    return false
+  }
+  return true
+}
+
 async function getStationList(q: string) {
   const LIMIT = 20
   return await client.stations.getStationsGeneral(q, LIMIT)
@@ -47,7 +47,10 @@ async function getStationList(q: string) {
 async function updateStationList(q: string) {
   if (q === '') return
   const stations = await getStationList(q)
-  if (!stations.ok) return
+  if (!stations.ok) {
+    toastStore.addToast({ text: 'No station found', type: 'Error' })
+    return
+  }
   stationList.value = stations.data.flatMap(value => {
     return `${value.stationName} - ${value.stationCode}`
   })
@@ -56,6 +59,7 @@ async function updateStationList(q: string) {
 function onAutocompleteItemClick(data: string) {
   if (!data) {
     stationInputText.value = ''
+    stationCode = ''
     return
   }
   stationInputText.value = data
@@ -64,6 +68,7 @@ function onAutocompleteItemClick(data: string) {
 }
 
 async function searchStationInfo() {
+  if (!formValidation()) return
   const res = await client.stations.getStations(stationCode)
   if (!res.ok) return
   stationInfo.value = res.data[0]
