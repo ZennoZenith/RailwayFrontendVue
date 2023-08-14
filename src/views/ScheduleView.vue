@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import ScheduleForm from '@/components/ScheduleForm.vue'
-import { useScheduleStore } from '@/stores/scheduleStore'
+import TrainForm from '@/components/TrainForm.vue'
+import { useTrainStore } from '@/stores/trainStore'
 import client from '@/util/ApiClient'
 import { type ScheduleInfo } from 'api-railway'
 import { onMounted, ref } from 'vue'
 import { HHMMtoMinutes } from '@/util'
 
-const scheduleStore = useScheduleStore()
+const trainStore = useTrainStore()
 
 const schedule = ref<ScheduleInfo['schedule']>()
 const trainInfo = ref<{ trainNumber: string; trainName: string }>({
@@ -15,22 +15,22 @@ const trainInfo = ref<{ trainNumber: string; trainName: string }>({
 })
 
 async function searchSchedule() {
-  const res = await client.schedules.getSchedules(scheduleStore.trainNumber)
+  const res = await client.schedules.getSchedules(trainStore.trainNumber)
   schedule.value = res.data[0].schedule
   trainInfo.value.trainName = res.data[0].trainName
   trainInfo.value.trainNumber = res.data[0].trainNumber
 }
 
 onMounted(() => {
-  if (scheduleStore.redirected === true) searchSchedule()
-  scheduleStore.redirected = false
+  if (trainStore.redirected === true) searchSchedule()
+  trainStore.redirected = false
 })
 </script>
 
 <template>
   <main>
     <section class="search-schedule-form-container">
-      <ScheduleForm @on-schedule-search="searchSchedule" />
+      <TrainForm @on-train-search="searchSchedule" />
     </section>
     <section class="train-info">
       <span class="train-number"> {{ trainInfo.trainNumber }}</span>
@@ -109,3 +109,4 @@ onMounted(() => {
   margin-left: 10px;
 }
 </style>
+@/stores/trainStore

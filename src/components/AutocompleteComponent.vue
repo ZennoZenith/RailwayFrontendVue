@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits(['onAutocompleteItemClick', 'update:text', 'onKeyUp'])
 
-const inputElement = ref<InputHTMLAttributes | null>(null)
+const inputElement = ref<HTMLInputElement | null>(null)
 const shouldLabelBeFocusedState = ref(false)
 const showAutoSuggest = ref(false)
 
@@ -44,8 +44,11 @@ function animateLabel() {
 function clearInputText() {
   emits('onAutocompleteItemClick', undefined)
   emits('update:text', '')
-  shouldLabelBeFocusedState.value = false
-  if (inputElement.value) inputElement.value.value = ''
+  // shouldLabelBeFocusedState.value = true
+  if (inputElement.value) {
+    inputElement.value.focus()
+    inputElement.value.value = ''
+  }
 }
 
 function onAutocompleteItemClick(item: any) {
@@ -63,7 +66,10 @@ function onKeyDown() {
 
 <template>
   <div class="default-container">
-    <label class="default-label" :class="{ 'label-focus': shouldLabelBeFocusedState }" :for="id">
+    <label
+      class="default-label overflow-clip"
+      :class="{ 'label-focus': shouldLabelBeFocusedState }"
+      :for="id">
       {{ label }}
     </label>
     <slot></slot>

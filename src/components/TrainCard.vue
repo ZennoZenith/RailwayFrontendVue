@@ -7,8 +7,8 @@ import IconRightAngle from '@/components/icons/IconRightAngle.vue'
 import IconDuration from '@/components/icons/IconDuration.vue'
 import { ref } from 'vue'
 
-import { useScheduleStore } from '@/stores/scheduleStore'
-const scheduleStore = useScheduleStore()
+import { useTrainStore } from '@/stores/trainStore'
+const trainStore = useTrainStore()
 
 const props = defineProps<{ train: TrainsBtwStationsType }>()
 const train = ref(props.train)
@@ -44,19 +44,20 @@ function trainTypeColor(trainType: string): string {
 }
 
 function onClickTrainSchedule() {
-  scheduleStore.trainNumber = trainNumber
-  scheduleStore.trainName = trainName
-  scheduleStore.redirected = true
-  Routes.push(routes.schedule)
+  trainStore.trainNumber = trainNumber
+  trainStore.trainName = trainName
+  trainStore.redirected = true
 }
 </script>
 <template>
   <div class="train-card">
     <div class="train-type" :style="{ backgroundColor: trainTypeColor(trainType) }"></div>
-    <section class="tr-number-name-runs">
+    <section class="tr-number-name-runs overflow-clip">
       <span class="train-number">{{ trainNumber }}</span> &nbsp; | &nbsp;
-      <span class="train-name">{{ trainName }}</span> &nbsp;
-      <span @click="onClickTrainSchedule" class="link"> <IconRightAngle class="svg" /> </span>
+      <span class="train-name overflow-clip">{{ trainName }}</span> &nbsp;
+      <RouterLink @click="onClickTrainSchedule" class="link" :to="routes.schedule">
+        <IconRightAngle class="svg" />
+      </RouterLink>
       <section class="train-runs-on">
         <span
           v-for="trainRunsOnDay in trainRunsOnDays"
@@ -68,18 +69,18 @@ function onClickTrainSchedule() {
       </section>
     </section>
     <section class="departure-duration-arrival">
-      <div class="departure-time-station">
+      <div class="departure-time-station overflow-clip">
         <div class="departure-time time">{{ stationFrom.departureTime!.slice(0, 5) }}</div>
         <div class="departure-station station">{{ stationFrom.stationName }}</div>
       </div>
-      <div class="duration-distance">
+      <div class="duration-distance overflow-clip">
         <div class="duration">
           <IconDuration class="duration-icon" style="transform: rotate(180deg)" />{{ duration }}
           <IconDuration class="duration-icon" />
         </div>
         <div class="distance">{{ distance }} km</div>
       </div>
-      <div class="arrival-time-station">
+      <div class="arrival-time-station overflow-clip">
         <div class="arrival-time time">
           {{ stationTo.arrivalTime!.slice(0, 5) }}
         </div>
@@ -210,3 +211,4 @@ svg {
   padding: 0 5px;
 }
 </style>
+@/stores/trainStore

@@ -3,16 +3,16 @@ import Autocomplete from '@/components/AutocompleteComponent.vue'
 import { onMounted, ref } from 'vue'
 
 import client from '@/util/ApiClient'
-import { useScheduleStore } from '@/stores/scheduleStore'
+import { useTrainStore } from '@/stores/trainStore'
 import type { TrainGeneralInfo } from 'api-railway'
 
-const scheduleStore = useScheduleStore()
+const trainStore = useTrainStore()
 const trainNumberInputText = ref('')
 
-const emits = defineEmits(['onScheduleSearch'])
+const emits = defineEmits(['onTrainSearch'])
 onMounted(() => {
-  if (scheduleStore.trainNumber !== undefined && scheduleStore.trainNumber !== '')
-    trainNumberInputText.value = `${scheduleStore.trainNumber} - ${scheduleStore.trainName}`
+  if (trainStore.trainNumber !== undefined && trainStore.trainNumber !== '')
+    trainNumberInputText.value = `${trainStore.trainNumber} - ${trainStore.trainName}`
 })
 
 async function getTrainList(q: string) {
@@ -22,9 +22,9 @@ async function getTrainList(q: string) {
 
 async function updateTrainList(q: string) {
   if (q === '') return
-  if (q.length > 4) {
-    if (scheduleStore.trainList) {
-      scheduleStore.trainList = scheduleStore.trainList
+  if (parseInt(q) && q.length > 4) {
+    if (trainStore.trainList) {
+      trainStore.trainList = trainStore.trainList
         .filter(train => train.trainNumber.includes(q) || train.trainName.includes(q))
         .flatMap(value => {
           return { ...value, text: `${value.trainNumber} - ${value.trainName}` }
@@ -34,24 +34,24 @@ async function updateTrainList(q: string) {
   }
   const trains = await getTrainList(q)
   if (!trains.ok) return
-  scheduleStore.trainList = trains.data.flatMap(value => {
+  trainStore.trainList = trains.data.flatMap(value => {
     return { ...value, text: `${value.trainNumber} - ${value.trainName}` }
   })
 }
 
 function onAutocompleteItemClick(data: TrainGeneralInfo) {
   if (!data) {
-    scheduleStore.trainNumber = ''
-    scheduleStore.trainName = ''
+    trainStore.trainNumber = ''
+    trainStore.trainName = ''
     return
   }
-  scheduleStore.trainNumber = data.trainNumber
-  scheduleStore.trainName = data.trainName
+  trainStore.trainNumber = data.trainNumber
+  trainStore.trainName = data.trainName
   searchSchedule()
 }
 
 function searchSchedule() {
-  emits('onScheduleSearch')
+  emits('onTrainSearch')
 }
 </script>
 <template>
@@ -62,7 +62,7 @@ function searchSchedule() {
     label="Train Number / Name"
     v-model:text="trainNumberInputText"
     @onKeyUp="updateTrainList"
-    :autocompleteList="scheduleStore.trainList"
+    :autocompleteList="trainStore.trainList"
     @onAutocompleteItemClick="onAutocompleteItemClick">
     <img alt="" class="logo" src="@/assets/train-schedule.svg" />
   </Autocomplete>
@@ -110,3 +110,4 @@ function searchSchedule() {
   outline: none;
 }
 </style>
+@/stores/trainStore

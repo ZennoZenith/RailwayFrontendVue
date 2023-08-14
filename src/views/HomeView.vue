@@ -1,47 +1,68 @@
 <script setup lang="ts">
 import TrainsbtwstationsForm from '@/components/TrainsbtwstationsForm.vue'
+import router, { routes } from '@/router'
 import { RouterLink } from 'vue-router'
+import { useTrainStore } from '@/stores/trainStore'
+import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
+
+const trainStore = useTrainStore()
+const trainsBetweenStationStore = useTrainsBtwStationsStore()
+
+type PopularTrain = {
+  trainNumber: string
+  trainName: string
+  displayName: string
+}
+
+type PopularRoute = {
+  fromStationName: string
+  fromStationCode: string
+  toStaitonName: string
+  toStationCode: string
+}
 
 const trainInfoServices = [
-  { text: 'Trains btw stations', route: '/', imgSrc: '/src/assets/location-dot-solid.svg' },
-  { text: 'Train schedule', route: '/', imgSrc: '/src/assets/train-schedule.svg' },
-  { text: 'Train Info', route: '/', imgSrc: '/src/assets/train-info.svg' },
-  { text: 'Station Info', route: '/', imgSrc: '/src/assets/station.svg' },
+  { text: 'Trains btw stations', route: routes.home, imgSrc: '/src/assets/location-dot-solid.svg' },
+  { text: 'Train schedule', route: routes.schedule, imgSrc: '/src/assets/train-schedule.svg' },
+  { text: 'Train Info', route: routes.train, imgSrc: '/src/assets/train-info.svg' },
+  { text: 'Station Info', route: routes.station, imgSrc: '/src/assets/station.svg' },
 ]
 
-const popularTrains = [
-  { trainNumber: '12650', trainName: 'Train name' },
-  { trainNumber: '12650', trainName: 'Train name' },
-  { trainNumber: '12650', trainName: 'Train name' },
-  { trainNumber: '12650', trainName: 'Train name' },
+const popularTrains: PopularTrain[] = [
+  { trainNumber: '12779', trainName: 'GOA EXPRESS', displayName: 'Goa Express' },
+  { trainNumber: '12423', trainName: 'RAJDHANI EXP', displayName: 'Dibrugarh Rajdhani Express' },
+  { trainNumber: '12285', trainName: 'NZM DURONTO EXP', displayName: 'Nizamuddin Duronto Express' },
+  { trainNumber: '22435', trainName: 'VANDE BHARAT EX', displayName: 'Vande Bharat Express' },
 ]
 
-const popularRoutes = [
+const popularRoutes: PopularRoute[] = [
   {
-    fromStationName: 'Delhi',
+    fromStationName: 'Hazrat Nizamuddin',
     fromStationCode: 'NZM',
-    toStaitonName: 'Mumbai',
-    toStationCode: '',
+    toStaitonName: 'Secunderabad Junction',
+    toStationCode: 'SC',
   },
   {
-    fromStationName: 'Delhi',
-    fromStationCode: 'NZM',
-    toStaitonName: 'Mumbai',
-    toStationCode: '',
-  },
-  {
-    fromStationName: 'Delhi',
-    fromStationCode: 'NZM',
-    toStaitonName: 'Mumbai',
-    toStationCode: '',
-  },
-  {
-    fromStationName: 'Delhi',
-    fromStationCode: 'NZM',
-    toStaitonName: 'Mumbai',
-    toStationCode: '',
+    fromStationName: 'New Delhi',
+    fromStationCode: 'NDLS',
+    toStaitonName: 'Patna Junction',
+    toStationCode: 'PNBE',
   },
 ]
+
+function onClickPopularTrains(item: PopularTrain) {
+  trainStore.redirected = true
+  trainStore.trainNumber = item.trainNumber
+  trainStore.trainName = item.trainName
+}
+
+function onClickPopularRoutes(item: PopularRoute) {
+  trainsBetweenStationStore.redirected = true
+  trainsBetweenStationStore.fromStationCode = item.fromStationCode
+  trainsBetweenStationStore.fromStationName = item.fromStationName
+  trainsBetweenStationStore.toStationCode = item.toStationCode
+  trainsBetweenStationStore.toStationName = item.toStaitonName
+}
 </script>
 
 <template>
@@ -61,15 +82,21 @@ const popularRoutes = [
     <section class="grid-2">
       <h3>Popular Trains</h3>
       <div v-for="item in popularTrains" :key="item.trainNumber">
-        <RouterLink class="link overflow-ellipsis" :to="'/'">
-          {{ item.trainNumber }} - {{ item.trainName }}
+        <RouterLink
+          class="link overflow-ellipsis"
+          @click="onClickPopularTrains(item)"
+          :to="routes.schedule">
+          {{ item.trainNumber }} - {{ item.displayName ? item.displayName : item.trainName }}
         </RouterLink>
       </div>
     </section>
     <section class="grid-2">
       <h3>Popular Routes</h3>
       <div v-for="(item, index) in popularRoutes" :key="index">
-        <RouterLink class="link overflow-ellipsis" :to="'/'">
+        <RouterLink
+          class="link overflow-ellipsis"
+          @click="onClickPopularRoutes(item)"
+          :to="routes.trainsBtwStations">
           {{ item.fromStationName }} to {{ item.toStaitonName }}
         </RouterLink>
       </div>
@@ -103,11 +130,13 @@ section > * {
   grid-template-columns: 1fr 1fr;
   gap: 1em;
 }
+
 h3 {
   padding: 5px;
   font-size: 2rem;
   grid-area: 1 / 1 /1/ 3;
 }
+
 .grid-2 > div {
   border-radius: 0.5em;
   height: 3.5em;
@@ -123,6 +152,7 @@ h3 {
   color: inherit;
   font-size: 0.9rem;
 }
+
 .link:hover {
   color: rgb(98, 113, 157);
 }
@@ -132,3 +162,4 @@ h3 {
   padding-right: 10px;
 }
 </style>
+@/stores/trainStore
