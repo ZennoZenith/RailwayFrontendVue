@@ -4,6 +4,10 @@ import router, { routes } from '@/router'
 import { RouterLink } from 'vue-router'
 import { useTrainStore } from '@/stores/trainStore'
 import { useTrainsBtwStationsStore } from '@/stores/trainsBtwStationsStore'
+import locationDotSolidIcon from '@/assets/location-dot-solid.svg'
+import trainScheduleIcon from '@/assets/train-schedule.svg'
+import trainInfoIcon from '@/assets/train-info.svg'
+import stationIcon from '@/assets/station.svg'
 
 const trainStore = useTrainStore()
 const trainsBetweenStationStore = useTrainsBtwStationsStore()
@@ -22,10 +26,10 @@ type PopularRoute = {
 }
 
 const trainInfoServices = [
-  { text: 'Trains btw stations', route: routes.home, imgSrc: '/src/assets/location-dot-solid.svg' },
-  { text: 'Train schedule', route: routes.schedule, imgSrc: '/src/assets/train-schedule.svg' },
-  { text: 'Train Info', route: routes.train, imgSrc: '/src/assets/train-info.svg' },
-  { text: 'Station Info', route: routes.station, imgSrc: '/src/assets/station.svg' },
+  { text: 'Trains btw stations', route: routes.home, imgSrc: locationDotSolidIcon },
+  { text: 'Train schedule', route: routes.schedule, imgSrc: trainScheduleIcon },
+  { text: 'Train Info', route: routes.train, imgSrc: trainInfoIcon },
+  { text: 'Station Info', route: routes.station, imgSrc: stationIcon },
 ]
 
 const popularTrains: PopularTrain[] = [

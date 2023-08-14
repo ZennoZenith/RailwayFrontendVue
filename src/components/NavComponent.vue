@@ -4,6 +4,12 @@ import { useHamburgerStore } from '@/stores/hamburgerStore'
 // import { range } from '@/util'
 import { ref } from 'vue'
 import { routes } from '@/router'
+
+import locationDotSolidIcon from '@/assets/location-dot-solid.svg'
+import trainScheduleIcon from '@/assets/train-schedule.svg'
+import trainInfoIcon from '@/assets/train-info.svg'
+import stationIcon from '@/assets/station.svg'
+
 const navList = ref<HTMLElement | null>(null)
 const hamburger = useHamburgerStore()
 
@@ -21,11 +27,11 @@ const trainInfoServices = [
   {
     text: 'Trains btw stations',
     route: routes.trainsBtwStations,
-    imgSrc: '/src/assets/location-dot-solid.svg',
+    imgSrc: locationDotSolidIcon,
   },
-  { text: 'Train schedule', route: routes.schedule, imgSrc: '/src/assets/train-schedule.svg' },
-  { text: 'Train Info', route: routes.train, imgSrc: '/src/assets/train-info.svg' },
-  { text: 'Station Info', route: routes.station, imgSrc: '/src/assets/station.svg' },
+  { text: 'Train schedule', route: routes.schedule, imgSrc: trainScheduleIcon },
+  { text: 'Train Info', route: routes.train, imgSrc: trainInfoIcon },
+  { text: 'Station Info', route: routes.station, imgSrc: stationIcon },
 ]
 </script>
 
