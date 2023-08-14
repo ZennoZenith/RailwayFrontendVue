@@ -166,4 +166,3 @@ h3 {
   padding-right: 10px;
 }
 </style>
-@/stores/trainStore

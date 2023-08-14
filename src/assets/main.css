@@ -21,3 +21,10 @@ main {
   position: relative;
   top: var(--header-height);
 }
+
+@media (width > 70em) {
+  main {
+    margin: auto auto;
+    width: 70em;
+  }
+}
